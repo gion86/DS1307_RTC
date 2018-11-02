@@ -3,7 +3,7 @@
 	<name>DS1307RTC</name>
 	<comment></comment>
 	<projects>
-		<project>AttinyCore</project>
+		<project>ATTinyCore</project>
 		<project>TinyWireM</project>
 	</projects>
 	<buildSpec>
