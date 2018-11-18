@@ -11,9 +11,9 @@
 /**
  * RTC based on the DS1307 chip connected via I2C and the Wire library
  */
-class RTC_DS1307 {
+class DS1307RTC {
 public:
-  RTC_DS1307(USI_TWI &bus);
+  DS1307RTC(USI_TWI &bus);
 
   uint8_t isrunning(void);
   void sqw(int sqw);

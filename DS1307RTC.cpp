@@ -7,14 +7,14 @@
 #include <DS1307RTC.h>
 #include <TinyWireM.h>
 
-RTC_DS1307::RTC_DS1307(USI_TWI &bus) :
+DS1307RTC::DS1307RTC(USI_TWI &bus) :
     busI2C(bus) {
 }
 
 // ##############################################################################
 // PUBLIC FUNCTIONS
 
-uint8_t RTC_DS1307::isrunning(void) {
+uint8_t DS1307RTC::isrunning(void) {
   busI2C.beginTransmission(DS1307_ADDRESS);
   busI2C.send(0x00);
   busI2C.endTransmission();
@@ -24,7 +24,7 @@ uint8_t RTC_DS1307::isrunning(void) {
   return !(ss >> 7);
 }
 
-void RTC_DS1307::sqw(int sqw) {
+void DS1307RTC::sqw(int sqw) {
   busI2C.beginTransmission(DS1307_ADDRESS);
   busI2C.send(0x07);
   switch (sqw) {
@@ -47,14 +47,14 @@ void RTC_DS1307::sqw(int sqw) {
   busI2C.endTransmission();
 }
 
-time_t RTC_DS1307::get() // Acquire data from buffer and convert to time_t
+time_t DS1307RTC::get() // Acquire data from buffer and convert to time_t
 {
   tmElements_t tm;
   read(tm);
   return (makeTime(tm));
 }
 
-void RTC_DS1307::set(const time_t &t) {
+void DS1307RTC::set(const time_t &t) {
   tmElements_t tm;
   breakTime(t, tm);
   tm.Second |= 0x80; // stop the clock
@@ -64,7 +64,7 @@ void RTC_DS1307::set(const time_t &t) {
 }
 
 // Aquire data from the RTC chip in BCD format
-void RTC_DS1307::read(tmElements_t &tm) {
+void DS1307RTC::read(tmElements_t &tm) {
   busI2C.beginTransmission(DS1307_ADDRESS);
   busI2C.send(0x00);
   busI2C.endTransmission();
@@ -80,7 +80,7 @@ void RTC_DS1307::read(tmElements_t &tm) {
   tm.Year = y2kYearToTm((bcd2dec(busI2C.receive())));
 }
 
-void RTC_DS1307::write(tmElements_t &tm) {
+void DS1307RTC::write(tmElements_t &tm) {
   busI2C.beginTransmission(DS1307_ADDRESS);
 
   busI2C.send(0x00); // reset register pointer
@@ -96,7 +96,7 @@ void RTC_DS1307::write(tmElements_t &tm) {
 
 // ##############################################################################
 // new function not in original DS1307RC.cpp
-tmDriftInfo RTC_DS1307::read_DriftInfo() {
+tmDriftInfo DS1307RTC::read_DriftInfo() {
   tmDriftInfo t;
   t.DriftStart = 0;
   t.DriftDays = 0;
@@ -129,7 +129,7 @@ tmDriftInfo RTC_DS1307::read_DriftInfo() {
 
 // ##############################################################################
 // new function not in original DS1307RC.cpp
-void RTC_DS1307::write_DriftInfo(tmDriftInfo di) {
+void DS1307RTC::write_DriftInfo(tmDriftInfo di) {
   busI2C.beginTransmission(DS1307_ADDRESS);
 
   busI2C.send(0x08); // set register pointer
@@ -151,12 +151,12 @@ void RTC_DS1307::write_DriftInfo(tmDriftInfo di) {
 // PRIVATE FUNCTIONS
 
 // Convert Decimal to Binary Coded Decimal (BCD)
-uint8_t RTC_DS1307::dec2bcd(uint8_t num) {
+uint8_t DS1307RTC::dec2bcd(uint8_t num) {
   return ((num / 10 * 16) + (num % 10));
 }
 
 // Convert Binary Coded Decimal (BCD) to Decimal
-uint8_t RTC_DS1307::bcd2dec(uint8_t num) {
+uint8_t DS1307RTC::bcd2dec(uint8_t num) {
   return ((num / 16 * 10) + (num % 16));
 }
 
